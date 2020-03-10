@@ -1,4 +1,5 @@
 # [Deep-Sort](../Paper/deep-sort%20SIMPLE%20ONLINE%20AND%20REALTIME%20TRACKING%20WITH%20A%20DEEP%20ASSOCIATION%20METRIC.pdf)
+[参考翻译](https://www.cnblogs.com/YiXiaoZhou/p/7074037.html)
 ## sort with deep association metric
 ### 状态估计
 - 八维状态空间$(u,v,\gamma,h,\dot{x},\dot{y},\dot{\gamma},\dot{h})$
