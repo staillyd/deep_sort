@@ -45,7 +45,7 @@ def non_max_suppression(boxes, max_bbox_overlap, scores=None):
     x2 = boxes[:, 2] + boxes[:, 0]
     y2 = boxes[:, 3] + boxes[:, 1]
 
-    area = (x2 - x1 + 1) * (y2 - y1 + 1)
+    area = (x2 - x1 + 1) * (y2 - y1 + 1)#box面积
     if scores is not None:
         idxs = np.argsort(scores)
     else:

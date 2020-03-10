@@ -69,12 +69,12 @@ class KalmanFilter(object):
             to 0 mean.
 
         """
-        mean_pos = measurement
+        mean_pos = measurement#见deep-sort.md
         mean_vel = np.zeros_like(mean_pos)
-        mean = np.r_[mean_pos, mean_vel]
+        mean = np.r_[mean_pos, mean_vel]#拼接
 
         std = [
-            2 * self._std_weight_position * measurement[3],
+            2 * self._std_weight_position * measurement[3],#系数*detection的h
             2 * self._std_weight_position * measurement[3],
             1e-2,
             2 * self._std_weight_position * measurement[3],
@@ -178,7 +178,7 @@ class KalmanFilter(object):
         kalman_gain = scipy.linalg.cho_solve(
             (chol_factor, lower), np.dot(covariance, self._update_mat.T).T,
             check_finite=False).T
-        innovation = measurement - projected_mean
+        innovation = measurement - projected_mean#z_t-H_t\mu
 
         new_mean = mean + np.dot(innovation, kalman_gain.T)
         new_covariance = covariance - np.linalg.multi_dot((
@@ -225,5 +225,5 @@ class KalmanFilter(object):
         z = scipy.linalg.solve_triangular(
             cholesky_factor, d.T, lower=True, check_finite=False,
             overwrite_b=True)
-        squared_maha = np.sum(z * z, axis=0)
+        squared_maha = np.sum(z * z, axis=0)#??
         return squared_maha

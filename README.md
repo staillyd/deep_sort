@@ -1,3 +1,4 @@
+forked from https://github.com/nwojke/deep_sort.git
 # Deep SORT
 
 ## Introduction
@@ -139,3 +140,8 @@ If you find this repo useful in your research, please consider citing the follow
       organization={IEEE},
       doi={10.1109/WACV.2018.00087}
     }
+
+# 个人笔记_staillyd
+  - [论文](paper/deep-sort%20SIMPLE%20ONLINE%20AND%20REALTIME%20TRACKING%20WITH%20A%20DEEP%20ASSOCIATION%20METRIC.pdf)
+  - [论文笔记](note/deep-sort.md)
+  - [代码笔记](note/code.md)

@@ -147,10 +147,10 @@ class NearestNeighborDistanceMetric(object):
             A list of targets that are currently present in the scene.
 
         """
-        for feature, target in zip(features, targets):
+        for feature, target in zip(features, targets):#track id对应的特征   track id
             self.samples.setdefault(target, []).append(feature)
             if self.budget is not None:
-                self.samples[target] = self.samples[target][-self.budget:]
+                self.samples[target] = self.samples[target][-self.budget:]#保留最新的100个特征
         self.samples = {k: self.samples[k] for k in active_targets}
 
     def distance(self, features, targets):
@@ -172,6 +172,6 @@ class NearestNeighborDistanceMetric(object):
 
         """
         cost_matrix = np.zeros((len(targets), len(features)))
-        for i, target in enumerate(targets):
+        for i, target in enumerate(targets):#track id
             cost_matrix[i, :] = self._metric(self.samples[target], features)
         return cost_matrix

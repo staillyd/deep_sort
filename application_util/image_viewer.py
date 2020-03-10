@@ -302,12 +302,12 @@ class ImageViewer(object):
         while not self._terminate:
             t0 = time.time()
             if not is_paused:
-                self._terminate = not self._user_fun()
+                self._terminate = not self._user_fun()#调用visualization里的_update_fun函数，当遍历完图像时返回False.即_terminate在遍历完图像为True
                 if self._video_writer is not None:
                     self._video_writer.write(
                         cv2.resize(self.image, self._window_shape))
             t1 = time.time()
-            remaining_time = max(1, int(self._update_ms - 1e3*(t1-t0)))
+            remaining_time = max(1, int(self._update_ms - 1e3*(t1-t0)))#_update_ms帧之间的间隔时间
             cv2.imshow(
                 self._caption, cv2.resize(self.image, self._window_shape[:2]))
             key = cv2.waitKey(remaining_time)

@@ -51,7 +51,7 @@ def min_cost_matching(
 
     if len(detection_indices) == 0 or len(track_indices) == 0:
         return [], track_indices, detection_indices  # Nothing to match.
-
+    #匈牙利算法解决指派问题
     cost_matrix = distance_metric(
         tracks, detections, track_indices, detection_indices)
     cost_matrix[cost_matrix > max_distance] = max_distance + 1e-5
@@ -119,16 +119,16 @@ def matching_cascade(
     if detection_indices is None:
         detection_indices = list(range(len(detections)))
 
-    unmatched_detections = detection_indices
-    matches = []
-    for level in range(cascade_depth):
+    unmatched_detections = detection_indices#deep-sort.md  集合M
+    matches = []#集合U?
+    for level in range(cascade_depth):#cascade_depth:A_max
         if len(unmatched_detections) == 0:  # No detections left
             break
 
-        track_indices_l = [
-            k for k in track_indices
+        track_indices_l = [# confirmed tracks 并且 a_k=1+level
+            k for k in track_indices# !confirmed_tracks
             if tracks[k].time_since_update == 1 + level
-        ]
+        ]#T_n
         if len(track_indices_l) == 0:  # Nothing to match at this level
             continue
 
@@ -179,7 +179,7 @@ def gate_cost_matrix(
 
     """
     gating_dim = 2 if only_position else 4
-    gating_threshold = kalman_filter.chi2inv95[gating_dim]
+    gating_threshold = kalman_filter.chi2inv95[gating_dim]#t^{(1)}
     measurements = np.asarray(
         [detections[i].to_xyah() for i in detection_indices])
     for row, track_idx in enumerate(track_indices):

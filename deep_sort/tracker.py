@@ -93,9 +93,9 @@ class Tracker:
     def _match(self, detections):
 
         def gated_metric(tracks, dets, track_indices, detection_indices):
-            features = np.array([dets[i].feature for i in detection_indices])
+            features = np.array([dets[i].feature for i in detection_indices])#detection的特征
             targets = np.array([tracks[i].track_id for i in track_indices])
-            cost_matrix = self.metric.distance(features, targets)
+            cost_matrix = self.metric.distance(features, targets)#表观匹配度  所有confirmed track的所有特征
             cost_matrix = linear_assignment.gate_cost_matrix(
                 self.kf, cost_matrix, tracks, dets, track_indices,
                 detection_indices)
@@ -108,7 +108,7 @@ class Tracker:
         unconfirmed_tracks = [
             i for i, t in enumerate(self.tracks) if not t.is_confirmed()]
 
-        # Associate confirmed tracks using appearance features.
+        # Associate confirmed tracks using appearance features.级联匹配
         matches_a, unmatched_tracks_a, unmatched_detections = \
             linear_assignment.matching_cascade(
                 gated_metric, self.metric.matching_threshold, self.max_age,
@@ -117,10 +117,10 @@ class Tracker:
         # Associate remaining tracks together with unconfirmed tracks using IOU.
         iou_track_candidates = unconfirmed_tracks + [
             k for k in unmatched_tracks_a if
-            self.tracks[k].time_since_update == 1]
+            self.tracks[k].time_since_update == 1]#unconfirmed_tracks+级联匹配失败且只有1帧未匹配上的track
         unmatched_tracks_a = [
             k for k in unmatched_tracks_a if
-            self.tracks[k].time_since_update != 1]
+            self.tracks[k].time_since_update != 1]#与当前帧未匹配成功的track
         matches_b, unmatched_tracks_b, unmatched_detections = \
             linear_assignment.min_cost_matching(
                 iou_matching.iou_cost, self.max_iou_distance, self.tracks,
@@ -131,7 +131,7 @@ class Tracker:
         return matches, unmatched_tracks, unmatched_detections
 
     def _initiate_track(self, detection):
-        mean, covariance = self.kf.initiate(detection.to_xyah())
+        mean, covariance = self.kf.initiate(detection.to_xyah())#tlwh->xyah x,y:中心点 a:w/h
         self.tracks.append(Track(
             mean, covariance, self._next_id, self.n_init, self.max_age,
             detection.feature))
