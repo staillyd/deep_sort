@@ -91,7 +91,7 @@ some cases.
 
 ## Training the model
 
-To train the deep association metric model we used a novel [cosine metric learning](https://github.com/nwojke/cosine_metric_learning) approach which is provided as a separate repository.
+To train the deep association metric model we used a novel [cosine metric learning](https://github.com/staillyd/cosine_metric_learning) approach which is provided as a separate repository.
 
 ## Highlevel overview of source files
 
