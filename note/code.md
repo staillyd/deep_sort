@@ -297,6 +297,18 @@
   - 空格:暂停
   - s:step
 
+## Generating detections
+- extract_image_patch
+  - ![](imgs/extract_image_patch.png)
+  - image_patches:当前帧的所有detection转化的patch
+  - image_encoder(patch,batch_size)
+    - 若patch足够多，分批次向encoder输入当前批次的patch，得到encoder输出
+    - patch个数 < batch_size，输入patch，得到encoder输出
+  - 返回encoder输出
+- 输出 每帧的detection原始信息与encoder提取的特征 结合的结果
+- 即预先给定的detection信息
+
+
 ## code tips
 - 回调函数使用
   - [deep_sort_app](../deep_sort_app.py).run里的visualizer.run(frame_callback)

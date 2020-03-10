@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Generating detections",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/tools/generate_detections.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--model=./resources/networks/mars-small128.pb",
+                "--mot_dir=/home/staillyd/DataSets/MOT16/data/train",
+                "--output_dir=./resources/detections/MOT16_train"
+            ]
+        },
+        {
             "name": "running the tracker",
             "type": "python",
             "request": "launch",

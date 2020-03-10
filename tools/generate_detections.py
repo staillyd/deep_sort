@@ -45,11 +45,11 @@ def extract_image_patch(image, bbox, patch_shape):
         boundaries.
 
     """
-    bbox = np.array(bbox)
+    bbox = np.array(bbox)#tlwh
     if patch_shape is not None:
         # correct aspect ratio to patch shape
-        target_aspect = float(patch_shape[1]) / patch_shape[0]
-        new_width = target_aspect * bbox[3]
+        target_aspect = float(patch_shape[1]) / patch_shape[0]#encoder_h/encoder_w
+        new_width = target_aspect * bbox[3]#encoder_h/encoder_w*bbox_h
         bbox[0] -= (new_width - bbox[2]) / 2
         bbox[2] = new_width
 
@@ -63,7 +63,7 @@ def extract_image_patch(image, bbox, patch_shape):
     if np.any(bbox[:2] >= bbox[2:]):
         return None
     sx, sy, ex, ey = bbox
-    image = image[sy:ey, sx:ex]
+    image = image[sy:ey, sx:ex]#bbox对应的图像
     image = cv2.resize(image, tuple(patch_shape[::-1]))
     return image
 
@@ -102,8 +102,8 @@ def create_box_encoder(model_filename, input_name="images",
 
     def encoder(image, boxes):
         image_patches = []
-        for box in boxes:
-            patch = extract_image_patch(image, box, image_shape[:2])
+        for box in boxes:#对当前帧每个detection (tlwh)
+            patch = extract_image_patch(image, box, image_shape[:2]) #encoder输入的size
             if patch is None:
                 print("WARNING: Failed to extract image patch: %s." % str(box))
                 patch = np.random.uniform(
@@ -155,7 +155,7 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
             for f in os.listdir(image_dir)}
 
         detection_file = os.path.join(
-            detection_dir, sequence, "det/det.txt")
+            detection_dir, sequence, "det/det.txt")#det文件包含当前集合的每一帧的每一个detection信息，
         detections_in = np.loadtxt(detection_file, delimiter=',')
         detections_out = []
 
@@ -165,16 +165,16 @@ def generate_detections(encoder, mot_dir, output_dir, detection_dir=None):
         for frame_idx in range(min_frame_idx, max_frame_idx + 1):
             print("Frame %05d/%05d" % (frame_idx, max_frame_idx))
             mask = frame_indices == frame_idx
-            rows = detections_in[mask]
+            rows = detections_in[mask]#当前帧的所有detection信息
 
             if frame_idx not in image_filenames:
                 print("WARNING could not find image for frame %d" % frame_idx)
                 continue
             bgr_image = cv2.imread(
                 image_filenames[frame_idx], cv2.IMREAD_COLOR)
-            features = encoder(bgr_image, rows[:, 2:6].copy())
+            features = encoder(bgr_image, rows[:, 2:6].copy())#当前帧图像数据,当前帧所有detection的tlwh
             detections_out += [np.r_[(row, feature)] for row, feature
-                               in zip(rows, features)]
+                               in zip(rows, features)]#将当前帧的detection原始信息与encoder提取的特征结合
 
         output_filename = os.path.join(output_dir, "%s.npy" % sequence)
         np.save(
