@@ -99,7 +99,7 @@
         - unmatched_detections=[]
       - 合并级联匹配和IOU分配
         - matches=[(0, 0), (1, 1), (2, 2), (3, 5), (4, 3), (5, 6), (6, 4), (7, 7)]#两者相加
-        - unmatched_tracks:[8]#两者并集
+        - unmatched_tracks:[8]#unmatched_tracks_a中$a_k$>1的track与unmatched_tracks_b并集
       - 返回matches, unmatched_tracks, unmatched_detections
     - 更新
       - 匹配成功的matches中每对进行一次更新
@@ -133,7 +133,7 @@
         - unmatched_detections=[8,9,10]
       - 合并级联匹配和IOU分配
         - matches=[(0, 0), (1, 1), (2, 5), (3, 6), (4, 4), (5, 2), (6, 3), (7, 7)]#两者相加
-        - unmatched_tracks:[]#两者并集
+        - unmatched_tracks:[]#unmatched_tracks_a中$a_k$>1的track与unmatched_tracks_b并集
       - 返回matches, unmatched_tracks, unmatched_detections
     - 更新
       - 匹配成功的matches中每对进行一次更新
@@ -154,7 +154,7 @@
       - [samples](../deep_sort/nn_matching.py)保存Confirmed状态的track 最新的100个特征，[表观匹配度](deep-sort.md)**最新Lk=100之内**
         - {track id:特征}
         - 是track id不是track idx
-  - 第四帧
+  - **第四帧**
     - 匹配
       - confirmed_tracks=[0,1,2,3,4,5,6,7]
       - unconfirmed_tracks=[8,9,10]
@@ -175,7 +175,7 @@
         - unmatched_detections=[]
       - 合并级联匹配和IOU分配
         - matches=[(0, 0), (1, 1), (2, 3), (3, 4), (4, 2), (5, 6), (6, 5), (7, 7), (8, 10), (9, 8), (10, 9)]
-        - unmatched_tracks=[]#并集
+        - unmatched_tracks=[]#unmatched_tracks_a中$a_k$>1的track与unmatched_tracks_b并集
         - unmatched_detections=[]#级联匹配和IOU匹配都不成功的detection
     - 更新
       - 匹配成功的matches中每对进行一次更新
@@ -231,7 +231,7 @@
         - 传入的detection:unmatched_detection
         - 表观匹配度的[cost matrix](../deep_sort/nn_matching.py).distance()
           - ![](imgs/表观匹配度_cost_matrix.png)
-          - [ ] 这里好像并没有用到$t^{(2)}$
+          - [ ] 这里好像并没有用到$t^{(2)}$，用的是定值
         - 运动匹配度的[距离](../deep_sort/linear_assignment.py).gate_cost_matrix(表观匹配度的cost_matrix)
           - 计算gating_distance
             - kalman.[project](#project)($\mu,\Sigma$)得到$\mu_{projec},\Sigma_{project}$
@@ -308,6 +308,11 @@
 - 输出 每帧的detection原始信息与encoder提取的特征 结合的结果
 - 即预先给定的detection信息
 
+## 逻辑
+[流程图](https://www.processon.com/view/link/5e687d1fe4b0f2f3bd178ff6)
+## 应用
+- 原始yolo+原始deep_sort,存在问题
+  - ![](imgs/yolo+deep_sort.png)
 
 ## code tips
 - 回调函数使用
