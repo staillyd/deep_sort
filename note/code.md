@@ -243,7 +243,7 @@
         - 将cost_matrix中元素值>max_distance的值赋值为max_distance+1e-5
         - 线性分配:[匈牙利算法解决指派问题](https://www.cnblogs.com/chenyg32/p/3293247.html)
           - 选取矩阵就是m*n矩阵中，选取min(m,n)个元素，元素之间的行、列索引不能冲突，使得和最小
-        - 线性分配得到元素的cost < max_distance,则被视为匹配成功;其余的都是未匹配成功
+        - 线性分配得到元素的cost < max_distance(0.9),则被视为匹配成功;其余的都是未匹配成功
         - [ ] $t^{(2)}$是max_distance吗??? 这里传进来的max_distance为self.metric.matching_threshold
           - [nn_matching](../deep_sort/nn_matching.py).NearestNeighborDistanceMetric里有matching_threshold
           - [deep_sort_app]().run()
@@ -261,7 +261,7 @@
       - 其余为1-iou
     - 线性分配:[匈牙利算法解决指派问题](https://www.cnblogs.com/chenyg32/p/3293247.html)
       - 选取矩阵就是m*n矩阵中，选取min(m,n)个元素，元素之间的行、列索引不能冲突，使得和最小
-    - 线性分配得到元素的cost < max_distance,即$a_k\leq1$的track,则被视为匹配成功;其余的都是未匹配成功
+    - 线性分配得到元素的cost < max_distance(0.7),即$a_k\leq1$的track,则被视为匹配成功;其余的都是未匹配成功
 - <span id='kalman_update'>[kf](../deep_sort/kalman_filter.py).update($\mu,\Sigma,z_k$)</span>
   - <span id='project'>project($\mu,\Sigma$)</span>
     - $\mu_{project}=H\mu$
