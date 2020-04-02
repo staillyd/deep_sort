@@ -231,7 +231,12 @@
         - 传入的detection:unmatched_detection
         - 表观匹配度的[cost matrix](../deep_sort/nn_matching.py).distance()
           - ![](imgs/表观匹配度_cost_matrix.png)
-          - [ ] 这里好像并没有用到$t^{(2)}$，用的是定值
+          - $t^{(2)}$从级联匹配中传入，用的是定值，并不是论文中描述的从训练得到值
+            - 这里传进来的max_distance为self.metric.matching_threshold
+              - [nn_matching](../deep_sort/nn_matching.py).NearestNeighborDistanceMetric里有matching_threshold
+              - [deep_sort_app]().run()
+                - max_cosine_distance
+                - **从arg中给的**
         - 运动匹配度的[距离](../deep_sort/linear_assignment.py).gate_cost_matrix(表观匹配度的cost_matrix)
           - 计算gating_distance
             - kalman.[project](#project)($\mu,\Sigma$)得到$\mu_{projec},\Sigma_{project}$
@@ -240,15 +245,11 @@
             - squared_maha = np.sum(X * X, axis=0) 
               - [ ] 这是啥???这个得到的是马氏距离??? 保留个数=unmatched_detection个数的距离
           - ![](imgs/运动匹配度_cost_matrix.png)
+          - $t^{(1)}$:gating_threshold,在kalman_filter.py中定义为chi2inv95
         - 将cost_matrix中元素值>max_distance的值赋值为max_distance+1e-5
         - 线性分配:[匈牙利算法解决指派问题](https://www.cnblogs.com/chenyg32/p/3293247.html)
           - 选取矩阵就是m*n矩阵中，选取min(m,n)个元素，元素之间的行、列索引不能冲突，使得和最小
         - 线性分配得到元素的cost < max_distance(0.9),则被视为匹配成功;其余的都是未匹配成功
-        - [ ] $t^{(2)}$是max_distance吗??? 这里传进来的max_distance为self.metric.matching_threshold
-          - [nn_matching](../deep_sort/nn_matching.py).NearestNeighborDistanceMetric里有matching_threshold
-          - [deep_sort_app]().run()
-            - max_cosine_distance
-            - **从arg中给的**
 
 - IOU分配(sort论文的思想)
   - Associate remaining tracks together with unconfirmed tracks using IOU
